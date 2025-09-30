@@ -87,13 +87,98 @@ You can:
 --- 
 
 ## ❌ Error Handling
-- If a post fails (e.g. invalid token, network error), the workflow:
-1. Sends a failure email to your address
-2. Does not update the post status in the sheet
-- If successful:
-1. Updates post status and uploads report
+- If a post **fails** (e.g. invalid token, expired credentials, network error), the workflow will:
+  - Send a **failure email** to your configured email address
+  - **Do not** update the `post_status` in Google Sheets
+
+- If the post is **successful**, the workflow will:
+  - Update the `post_status` in the sheet to `"Posted"`
+  - Generate a `.csv` report and upload it to Google Drive
 
 ---
+
+## 🛠 LinkedIn Setup Guide (API Credentials)
+
+To allow n8n to post to LinkedIn on your behalf, you need to create a LinkedIn Developer App and configure authentication.
+
+### ✅ Step 1: Create a LinkedIn Page (If You Don’t Have One)
+
+1. Go to [LinkedIn Pages](https://www.linkedin.com/company/setup/new/)
+2. Choose a type (e.g., Small business or Community page)
+3. Fill in the required fields like:
+   - Page name
+   - Website
+   - Industry
+   - Logo and tagline
+4. Click **Create Page**
+
+> You must be an **admin of the page** to post via the API.
+
+---
+
+### ✅ Step 2: Create a LinkedIn Developer App
+
+1. Go to [LinkedIn Developers Portal](https://www.linkedin.com/developers/)
+2. Click **Create App**
+3. Fill in:
+   - App name
+   - LinkedIn page you created
+   - Business email
+   - App logo (optional)
+4. Agree to terms and click **Create App**
+
+---
+
+### ✅ Step 3: Configure Auth & Permissions
+
+1. Go to your app settings
+2. Under **"Auth"**, you’ll find:
+   - **Client ID**
+   - **Client Secret**
+3. Copy both — you’ll need them for n8n
+
+> You’ll use these in an **OAuth2 credential** in n8n.
+
+4. Add **Redirect URL**:  
+   For local n8n: `http://localhost:5678/rest/oauth2-credential/callback`
+
+---
+
+### ✅ Step 4: Add Required OAuth Scopes
+
+Go to the **"Products"** tab and request access to:
+
+- **Sign In with LinkedIn**
+- **Share on LinkedIn**
+
+After approval:
+
+- Add these scopes in your credential config in n8n:
+  - `r_liteprofile`
+  - `w_member_social`
+
+---
+
+### ✅ Step 5: Configure LinkedIn OAuth2 in n8n
+
+1. Go to **n8n → Credentials → Create New**
+2. Select **OAuth2 API**
+3. Fill in:
+   - **Auth URL**: `https://www.linkedin.com/oauth/v2/authorization`
+   - **Access Token URL**: `https://www.linkedin.com/oauth/v2/accessToken`
+   - **Client ID**: (from your app)
+   - **Client Secret**: (from your app)
+   - **Scope**: `r_liteprofile  w_member_social`
+   - **Token Type**: `Bearer`
+   - **Redirect URI**: as provided by n8n
+4. Save and **click "Connect"** to authorize
+
+---
+
+> 🔐 Once connected, you can use this credential in your LinkedIn node to post content.
+
+
+--- 
 
 ## 🙌 Contributing
 Contributions are welcome! Here's how:
