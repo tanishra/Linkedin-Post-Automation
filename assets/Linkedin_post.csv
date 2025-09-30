@@ -1,0 +1,9 @@
+Description,LinkedIn URN,Posted At
+"🚀 Just launched a new AI-powered Telegram bot — Image Generator (@tanishrajput_bot)!
+This bot can generate stunning images from text or voice prompts, powered by the black-forest-labs/FLUX.1-schnell model. Whether you want to visualize an idea, create concept art, or just have fun with AI — it's just a message away.
+📲 How it works:
+Send text or voice prompts in Telegram
+Get instant AI-generated images
+Images are auto-saved to Google Drive and logged in an Excel sheet for tracking
+Built using n8n for backend automation.
+Try it out 👉 @tanishrajput_bot","urn:li:share:7378483798835073026","2025-09-29T23:16:27.269+05:30"
