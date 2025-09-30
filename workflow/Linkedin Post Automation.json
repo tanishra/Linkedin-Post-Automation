@@ -1,0 +1,681 @@
+{
+  "name": "Linkedin Post Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "person": "pnsc4XN-ub",
+        "text": "={{ $json.content }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        -1216,
+        1312
+      ],
+      "id": "6a609197-b9d9-494c-92f6-4b20a6f594f4",
+      "name": "Create a post",
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "tPVjsqbVifXkcX2w",
+          "name": "LinkedIn account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        1568
+      ],
+      "id": "67e35a87-039a-4ab2-9a0f-3dc7f0f163ef",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        864,
+        1296
+      ],
+      "id": "113953d2-0744-4d85-b586-6f9690d5afd5",
+      "name": "No Operation, do nothing1"
+    },
+    {
+      "parameters": {
+        "name": "=Linkedin_Post_{{ $now }}",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1Kc1S6lha0IxwFb_6byId8o-CqCa8J04f",
+          "mode": "list",
+          "cachedResultName": "Linkedin Post Automation",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1Kc1S6lha0IxwFb_6byId8o-CqCa8J04f"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        608,
+        1296
+      ],
+      "id": "d4bdccdc-8aa7-42fa-a932-20cc82b62f60",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "K2eN1uPii4Lywy6z",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1504,
+        1008
+      ],
+      "id": "5267bd7f-077f-4ee2-b0ee-826ac6b7fe6d",
+      "name": "9 AM"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1zzS-LOxE5ki2uUuprZL4E-kqQ5um3tjpAUSIu8_11HQ",
+          "mode": "list",
+          "cachedResultName": "Linkedin Post Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1zzS-LOxE5ki2uUuprZL4E-kqQ5um3tjpAUSIu8_11HQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1zzS-LOxE5ki2uUuprZL4E-kqQ5um3tjpAUSIu8_11HQ/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1216,
+        1008
+      ],
+      "id": "ce33589f-a2a6-491b-8de2-e970cddfa7b8",
+      "name": "Extract Data",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "76jZo9LRUnzo0mEM",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4d0222b1-db7c-43bf-b50b-da76a1543ec8",
+              "leftValue": "={{ $json.Description }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "91bc59c1-cc14-40eb-9e9f-047a2f4c8ca2",
+              "leftValue": "={{ $json.Post_status }}",
+              "rightValue": "\"Ready\"",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -976,
+        1008
+      ],
+      "id": "e9a55521-a6f0-4fb6-8350-d749fa60aeee",
+      "name": "Check for Ready"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "61eaf33f-1726-4d09-8911-38b1a2dd3f99",
+              "name": "text",
+              "value": "={{ $json.Description }}",
+              "type": "string"
+            },
+            {
+              "id": "53a97f47-7496-449a-8fc5-f87b9c2b00ab",
+              "name": "url",
+              "value": "={{ $json.URLs }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -720,
+        1024
+      ],
+      "id": "8baac26e-5946-430b-bc20-791b233c6172",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are an AI agent specialized in creating professional, educational, and engaging LinkedIn posts based on the description provided by the user. Generate a well-structured LinkedIn post that:\\n- Starts with an engaging hook\\n- Is professional in tone\\n- Is clear and easy to read\\n- Is educational and insightful\\n- Uses emojis sparingly (only when highly relevant and minimal)\\n- Contains relevant hashtags to improve visibility\\n- Ends with a clear call to action\\nDo not exceed 3000 characters as LinkedIn has limits, so keep it under that. Just give a proper formatted, structured, and professional LinkedIn post content.",
+              "role": "model"
+            },
+            {
+              "content": "=Please create a LinkedIn post based on this description: \\n {{ $json.text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        -496,
+        1024
+      ],
+      "id": "60ea6738-84db-4b16-a3fb-094cc488f8b4",
+      "name": "Content Generation",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "SKbD1G0ayWYmgNkV",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "36bc5039-c110-436c-b42e-1af3d5d2d139",
+              "name": "content",
+              "value": "={{ $json.content.parts[0].text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1472,
+        1312
+      ],
+      "id": "86e05ef3-9a6a-4a9d-86f0-fabf6ecb779d",
+      "name": "Content Filteration"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "30ea00f0-8ef5-49fc-9213-939530d13e48",
+              "leftValue": "={{ $json[\"urn\"] ? true : false}}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -960,
+        1312
+      ],
+      "id": "8ebef468-cd1f-4374-97ba-dc07ce794024",
+      "name": "Is Post Successful"
+    },
+    {
+      "parameters": {
+        "sendTo": "tanishrajput9@gmail.com",
+        "subject": "Linkedin Post Successful",
+        "message": "=Your LinkedIn post has been successfully published.  🔗 URN: {{ $json[\"urn\"] }} 📄 Post Description: {{ $('Content Generation').item.json.content.parts[0].text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -704,
+        1296
+      ],
+      "id": "d0b63a5d-9704-45c7-ae34-63358285d498",
+      "name": "Success Mail",
+      "webhookId": "51102fdd-589b-4ecb-b415-e72f23d6da24",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "4qNNZlGdjdGdCGtI",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "tanishrajput9@gmail.com",
+        "subject": "Linkedin Post Unsuccessful",
+        "message": "=🚫 Your LinkedIn post could not be published.\n\n🛠️ Reason: No URN returned by LinkedIn. Please check API response or authentication.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -960,
+        1568
+      ],
+      "id": "a179f2bf-cf3e-4abe-8d44-d9a9924f0541",
+      "name": "Failure Mail",
+      "webhookId": "250731d9-da32-44f4-9710-df5aab3b9da6",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "4qNNZlGdjdGdCGtI",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1zzS-LOxE5ki2uUuprZL4E-kqQ5um3tjpAUSIu8_11HQ",
+          "mode": "list",
+          "cachedResultName": "Linkedin Post Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1zzS-LOxE5ki2uUuprZL4E-kqQ5um3tjpAUSIu8_11HQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1zzS-LOxE5ki2uUuprZL4E-kqQ5um3tjpAUSIu8_11HQ/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Post_status": "Posted",
+            "row_number": "={{ $('Extract Data').item.json.row_number }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Description",
+              "displayName": "Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "URLs",
+              "displayName": "URLs",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Post_status",
+              "displayName": "Post_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -448,
+        1296
+      ],
+      "id": "b7037b3a-4daf-4159-9631-690466179771",
+      "name": "Post_status Update",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "76jZo9LRUnzo0mEM",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "26e3d125-94c9-4bca-91be-42b38e4f52b4",
+              "name": "Post Description",
+              "value": "={{ $('Extract Data').item.json.Description }}",
+              "type": "string"
+            },
+            {
+              "id": "01d7f2e0-d3b9-4bcc-9e4c-a91ae2923659",
+              "name": "URN",
+              "value": "={{ $('Create a post').item.json.urn }}",
+              "type": "string"
+            },
+            {
+              "id": "5cd5c859-ff9d-419e-8ee5-b1f8a2117c0a",
+              "name": "Posted at",
+              "value": "={{ $now }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -176,
+        1296
+      ],
+      "id": "765c8b46-4503-496a-bcca-85701e481afa",
+      "name": "Filter content for Drive"
+    },
+    {
+      "parameters": {
+        "jsCode": "const urn = $input.first().json.URN\nconst description = $input.first().json[\"Post Description\"]\nconst timestamp = $input.first().json[\"Posted at\"]\n\nconst csv = `Description,LinkedIn URN,Posted At\n\"${description}\",\"${urn}\",\"${timestamp}\"`;\n\nreturn [{ json: { file_content: csv } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        96,
+        1296
+      ],
+      "id": "80567a84-646a-4766-b3aa-77f87c6e7a73",
+      "name": "Creating csv file"
+    },
+    {
+      "parameters": {
+        "jsCode": "const content = $input.first().json.file_content\nconst fileName = \"LinkedIn_Post.csv\";\n\nreturn {\n  json: {},\n  binary: {\n    data: {\n      data: Buffer.from(content, \"utf8\").toString(\"base64\"),\n      mimeType: \"text/csv\",\n      fileName: fileName,\n    },\n  },\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        336,
+        1296
+      ],
+      "id": "716e92d6-e466-4a5c-88af-22c28dd0014c",
+      "name": "Converting csv to binary"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Create a post": {
+      "main": [
+        [
+          {
+            "node": "Is Post Successful",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload file": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "9 AM": {
+      "main": [
+        [
+          {
+            "node": "Extract Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Data": {
+      "main": [
+        [
+          {
+            "node": "Check for Ready",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check for Ready": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Content Generation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Content Generation": {
+      "main": [
+        [
+          {
+            "node": "Content Filteration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Content Filteration": {
+      "main": [
+        [
+          {
+            "node": "Create a post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Post Successful": {
+      "main": [
+        [
+          {
+            "node": "Success Mail",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Failure Mail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Success Mail": {
+      "main": [
+        [
+          {
+            "node": "Post_status Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Failure Mail": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post_status Update": {
+      "main": [
+        [
+          {
+            "node": "Filter content for Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter content for Drive": {
+      "main": [
+        [
+          {
+            "node": "Creating csv file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Creating csv file": {
+      "main": [
+        [
+          {
+            "node": "Converting csv to binary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Converting csv to binary": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e494bd28-64c0-4ac4-b42d-a2a1af8a98a7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f5eaed8a555982689cfe5d158f4c7415850055f678058617c4bd47872da5a6e6"
+  },
+  "id": "jmm71OG3KTgGhfGV",
+  "tags": []
+}
